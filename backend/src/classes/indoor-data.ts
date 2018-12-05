@@ -1,14 +1,14 @@
-import {Dht22Data} from './dht22-data';
-
 export class IndoorData {
 
-  public dht22Data: Dht22Data;
+  public humidity: number;
+  public temperature: number;
   public light: boolean;
-  public wet: boolean;
+  public higrometer: number;
 
   constructor() {
-    this.dht22Data = new Dht22Data();
+    this.humidity = 0;
+    this.temperature = 0;
     this.light = false;
-    this.wet = false;
+    this.higrometer = 0;
   }
 }

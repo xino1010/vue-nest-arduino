@@ -3,7 +3,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import VueSocketio from 'vue-socket.io-extended';
-import io from 'socket.io-client';
+import $socket from './socket-instance';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
@@ -16,7 +16,7 @@ import '../node_modules/weather-icons/css/weather-icons.min.css';
 // https://demos.creative-tim.com/bs3/paper-dashboard/dashboard.html
 
 Vue.config.productionTip = false;
-Vue.use(VueSocketio, io('http://localhost:3001'), {store});
+Vue.use(VueSocketio, $socket, {store});
 Vue.use(require('vue-moment'));
 
 new Vue({

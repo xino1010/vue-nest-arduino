@@ -1,50 +1,77 @@
-import {Injectable} from '@nestjs/common';
-import {Dht22Data} from '../classes/dht22-data';
 import {IndoorData} from '../classes/indoor-data';
+import {Injectable, Logger} from '@nestjs/common';
+import * as SerialPort from 'serialport';
+import {ArduinoSerialData} from '../interfaces/arduino-serial-data';
+
+const Readline = require('@serialport/parser-readline');
 
 @Injectable()
 export class IndoorService {
 
+  readonly baudRate: number = 115200;
+  readonly path: string = '/dev/ttyACM0';
   private indoorData: IndoorData;
+  private serialPort: SerialPort;
 
   constructor() {
     this.indoorData = new IndoorData();
+    this.serialPort = new SerialPort(this.path, {
+      baudRate: this.baudRate,
+    }, (err: any) => {
+      if (err) {
+        Logger.log(`An error occurred opening '${this.path}' using baudrate ${this.baudRate}`, IndoorService.name);
+        Logger.log(err, IndoorService.name);
+        return;
+      } else {
+        Logger.log(`Serial port '${this.path}' opened using baudrate ${this.baudRate}`, IndoorService.name);
+      }
+    });
+    const parser = this.serialPort.pipe(new Readline({delimiter: '\r\n'}));
+    parser.on('data', (data: string) => {
+      const serialData: ArduinoSerialData = this.isJsonString(data);
+      if (serialData != null) {
+        if (!serialData.error) {
+          this.indoorData.humidity = serialData.data.humidity;
+          this.indoorData.temperature = serialData.data.temperature;
+          this.indoorData.light = serialData.data.light;
+          this.indoorData.higrometer = serialData.data.higrometer;
+          Logger.log(this.indoorData, IndoorService.name);
+        } else {
+          this.indoorData.humidity = -1;
+          this.indoorData.temperature = -1;
+          this.indoorData.light = false;
+          this.indoorData.higrometer = -1;
+          Logger.log(serialData.message, IndoorService.name);
+        }
+      }
+    });
   }
 
   public getIndoorData(): IndoorData {
     return this.indoorData;
   }
 
-  public async updateIndoorData() {
-    await this.changeLightStatus();
-    await this.refreshTemperatureAndHumidity();
-    await this.refreshSoilMoisture();
-  }
-
-  public changeLightStatus(): Promise<boolean> {
-    return new Promise<boolean>((resolve) => {
-      this.indoorData.light = !this.indoorData.light;
-      resolve(this.indoorData.light);
+  public toggleLight(): void {
+    const action: any = {action: 'light'};
+    this.serialPort.write(JSON.stringify(action), (err: any) => {
+      if (err) {
+        Logger.log(`An error occurred toggling light ${err}`, IndoorService.name);
+      } else {
+        Logger.log(`Toggle light action sent`, IndoorService.name);
+      }
     });
   }
 
-  public refreshTemperatureAndHumidity(): Promise<Dht22Data> {
-    return new Promise<Dht22Data>((resolve) => {
-      this.indoorData.dht22Data.humidity = this.getRandomNumberBetweenInterval(0, 100);
-      this.indoorData.dht22Data.temperature = this.getRandomNumberBetweenInterval(0, 45);
-      resolve(this.indoorData.dht22Data);
-    });
+  private isJsonString(str: string): any {
+    try {
+      const o: any = JSON.parse(str);
+      if (o && typeof o === 'object') {
+        return o;
+      }
+    } catch (err) {
+    }
+    return null;
   }
 
-  public refreshSoilMoisture(): Promise<boolean> {
-    return new Promise<boolean>((resolve) => {
-      this.indoorData.wet = false;
-      resolve(this.indoorData.wet);
-    });
-  }
-
-  private getRandomNumberBetweenInterval(min: number, max: number): number {
-    return Math.random() * (+max - +min) + +min;
-  }
 
 }

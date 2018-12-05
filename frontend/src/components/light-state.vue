@@ -11,8 +11,20 @@
           <div class="numbers">
             <p>Light status</p>
             <div class="btn-group btn-toggle">
-              <button v-bind:class="['btn btn-sm btn-success', light ? 'active' : '']">ON</button>
-              <button v-bind:class="['btn btn-sm btn-default', !light ? 'active' : '']">OFF</button>
+              <button
+                  v-bind:class="['btn btn-sm btn-success', light ? 'active' : '']"
+                  :disabled="light"
+                  @click="toggleLight"
+              >
+                ON
+              </button>
+              <button
+                  v-bind:class="['btn btn-sm btn-default', !light ? 'active' : '']"
+                  :disabled="!light"
+                  @click="toggleLight"
+              >
+                OFF
+              </button>
             </div>
           </div>
         </div>
@@ -22,8 +34,8 @@
 </template>
 
 <script lang="ts">
+  import {Action, Getter} from 'vuex-class';
   import {Component, Vue} from 'vue-property-decorator';
-  import {Getter} from 'vuex-class';
   import {DashboardTypes} from '../types/dashboard.types';
 
   @Component({
@@ -31,6 +43,7 @@
   })
   export default class LightState extends Vue {
 
+    @Action(DashboardTypes.Light, {namespace: DashboardTypes.Store}) public toggleLight!: () => void;
     @Getter(DashboardTypes.Light, {namespace: DashboardTypes.Store}) public light!: boolean;
 
   }

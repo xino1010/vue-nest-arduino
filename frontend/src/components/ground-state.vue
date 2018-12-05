@@ -3,14 +3,14 @@
     <div class="content">
       <div class="row">
         <div class="col-xs-5">
-          <div v-bind:class="['icon-big', wet ? 'icon-info' : 'icon-warning', 'text-center']">
-            <i v-bind:class="{'fas fa-tint': wet, 'fas fa-fire': !wet}"></i>
+          <div v-bind:class="['icon-big', higrometer > 40 ? 'icon-info' : 'icon-warning', 'text-center']">
+            <i v-bind:class="[higrometer > 40 ? 'fas fa-tint' : 'fas fa-fire']"></i>
           </div>
         </div>
         <div class="col-xs-7">
           <div class="numbers">
             <p>Ground status</p>
-            {{ wet ? 'Wet' : 'Dry' }}
+            {{ higrometer }}%
           </div>
         </div>
       </div>
@@ -28,7 +28,7 @@
   })
   export default class GroundState extends Vue {
 
-    @Getter(DashboardTypes.Wet, {namespace: DashboardTypes.Store}) public wet!: boolean;
+    @Getter(DashboardTypes.Higrometer, {namespace: DashboardTypes.Store}) public higrometer!: number;
 
   }
 </script>

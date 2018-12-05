@@ -3,7 +3,7 @@ import {DashboardState} from '@/interfaces/dashboard.state';
 import {DashboardTypes} from '@/types/dashboard.types';
 import {IndoorData} from '@/classes/indoor-data';
 import {RootState} from '@/interfaces/root.state';
-import {observableAction} from 'vuex-observable';
+import $socket from '../socket-instance'; //
 
 const dashboardState: DashboardState = {
   indoorData: new IndoorData(),
@@ -11,16 +11,16 @@ const dashboardState: DashboardState = {
 
 const dashboardGetters: GetterTree<DashboardState, RootState> = {
   [DashboardTypes.Humidity](state: DashboardState): number {
-    return state.indoorData.dht22Data.humidity;
+    return state.indoorData.humidity;
   },
   [DashboardTypes.Light](state: DashboardState): boolean {
     return state.indoorData.light;
   },
   [DashboardTypes.Temperature](state: DashboardState): number {
-    return state.indoorData.dht22Data.temperature;
+    return state.indoorData.temperature;
   },
-  [DashboardTypes.Wet](state: DashboardState): boolean {
-    return state.indoorData.wet;
+  [DashboardTypes.Higrometer](state: DashboardState): number {
+    return state.indoorData.higrometer;
   },
 };
 
@@ -31,6 +31,9 @@ const dashboardMutations: MutationTree<DashboardState> = {
 };
 
 const dashboardActions: ActionTree<DashboardState, RootState> = {
+  [DashboardTypes.Light]: () => {
+    $socket.emit(DashboardTypes.SOCKET_INDOOR_TOGGLE_LIGHT);
+  },
 };
 
 export const DashboardStore: Module<DashboardState, RootState> = {

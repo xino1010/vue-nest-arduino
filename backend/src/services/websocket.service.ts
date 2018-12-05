@@ -1,3 +1,7 @@
+import {Event} from '../classes/event';
+import {IndoorData} from '../classes/indoor-data';
+import {IndoorService} from './indoor.service';
+import {Logger} from '@nestjs/common';
 import {
   OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit,
   SubscribeMessage,
@@ -5,17 +9,13 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io';
-import {Logger} from '@nestjs/common';
-import {IndoorData} from '../classes/indoor-data';
-import {Event} from '../classes/event';
-import {IndoorService} from './indoor.service';
 
 const port = 3001;
 
 @WebSocketGateway(port)
 export class WebsocketService implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
-  private intervalData: number = 2000; // ms
+  private intervalData: number = 1000; // ms
 
   @WebSocketServer() server: Server;
 
@@ -44,8 +44,13 @@ export class WebsocketService implements OnGatewayConnection, OnGatewayDisconnec
   }
 
   private async sendIndoorData() {
-    await this.indoorService.updateIndoorData();
     const indoorData: IndoorData = this.indoorService.getIndoorData();
     this.server.emit(Event.INDOOR_DATA, indoorData);
   }
+
+  @SubscribeMessage(Event.INDOOR_TOGGLE_LIGHT)
+  toggleLight(): void {
+    this.indoorService.toggleLight();
+  }
+
 }

@@ -7,7 +7,6 @@ Vue.use(Vuex);
 
 const rootState: RootState = {
   connected: false,
-  socket: null,
 };
 
 const rootGetters: GetterTree<RootState, RootState> = {};

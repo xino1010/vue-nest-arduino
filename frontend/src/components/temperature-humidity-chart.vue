@@ -32,8 +32,8 @@
         if (mutation.type === type && this.myChart != null) {
           const currentTime: string = moment().format('HH:MM:ss DD-MM-YYYY');
           this.myChart.data.labels.push(currentTime);
-          this.myChart.data.datasets[0].data.push(mutation.payload.dht22Data.temperature);
-          this.myChart.data.datasets[1].data.push(mutation.payload.dht22Data.humidity);
+          this.myChart.data.datasets[0].data.push(mutation.payload.temperature);
+          this.myChart.data.datasets[1].data.push(mutation.payload.humidity);
           this.myChart.update();
         }
       });
@@ -52,14 +52,14 @@
           datasets: [
             {
               label: 'Temperature',
-              data: [12, 19, 3, 5, 2, 3],
+              data: [],
               borderColor: '#B33C12',
               backgroundColor: '#B33C12',
               fill: false,
             },
             {
               label: 'Humidity',
-              data: [3, 2, 5, 3, 19, 12],
+              data: [],
               borderColor: '#68B3C8',
               backgroundColor: '#68B3C8',
               fill: false,
