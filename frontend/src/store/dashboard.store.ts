@@ -22,17 +22,26 @@ const dashboardGetters: GetterTree<DashboardState, RootState> = {
   [DashboardTypes.Higrometer](state: DashboardState): number {
     return state.indoorData.higrometer;
   },
+  [DashboardTypes.WaterLevel](state: DashboardState): number {
+    return state.indoorData.waterLevel;
+  },
 };
 
 const dashboardMutations: MutationTree<DashboardState> = {
   [DashboardTypes.SOCKET_INDOOR_DATA]: (state: DashboardState, indoorData: IndoorData) => {
     state.indoorData = indoorData;
   },
+  [DashboardTypes.ClearData]: (state: DashboardState) => {
+    state.indoorData = new IndoorData();
+  },
 };
 
 const dashboardActions: ActionTree<DashboardState, RootState> = {
   [DashboardTypes.Light]: () => {
     $socket.emit(DashboardTypes.SOCKET_INDOOR_TOGGLE_LIGHT);
+  },
+  [DashboardTypes.ClearData]: ({commit}) => {
+    commit(DashboardTypes.ClearData);
   },
 };
 

@@ -1,9 +1,10 @@
 export class DashboardTypes {
+  public static ClearData: string = 'ClearData';
   public static Higrometer: string = 'Higrometer';
   public static Humidity: string = 'Humidity';
   public static Light: string = 'Light';
   public static Temperature: string = 'Temperature';
-  public static TogglingLight: string = 'TogglingLight';
+  public static WaterLevel: string = 'WaterLevel';
 
   public static Store: string = 'DashboardStore';
 

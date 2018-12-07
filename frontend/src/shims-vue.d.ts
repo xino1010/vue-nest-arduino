@@ -4,4 +4,4 @@ declare module '*.vue' {
 }
 
 declare module 'vue-socket.io-extended';
-declare module 'vuex-observable';
+declare module 'vuex-toast';

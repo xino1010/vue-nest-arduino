@@ -3,13 +3,13 @@
     <div class="content">
       <div class="row">
         <div class="col-xs-5">
-          <div v-bind:class="['icon-big', higrometer > 40 ? 'icon-info' : 'icon-warning', 'text-center']">
-            <i v-bind:class="[higrometer > 40 ? 'fas fa-tint' : 'fas fa-fire']"></i>
+          <div v-bind:class="['icon-big', higrometer > 40 ? 'icon-info' : 'custom-icon', 'text-center']">
+            <i class="fas fa-tint"></i>
           </div>
         </div>
         <div class="col-xs-7">
           <div class="numbers">
-            <p>Ground status</p>
+            <p>Soil moisture</p>
             {{ higrometer }}%
           </div>
         </div>
@@ -20,8 +20,8 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator';
-  import {Getter} from 'vuex-class';
   import {DashboardTypes} from '../types/dashboard.types';
+  import {Getter} from 'vuex-class';
 
   @Component({
     name: 'ground-state',
@@ -34,5 +34,9 @@
 </script>
 
 <style scoped>
+
+  .custom-icon {
+    color: #cbd6d8;
+  }
 
 </style>

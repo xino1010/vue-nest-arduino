@@ -1,3 +1,4 @@
+import {createModule} from 'vuex-toast';
 import {DashboardStore} from '@/store/dashboard.store';
 import {RootState} from '@/interfaces/root.state';
 import Vue from 'vue';
@@ -31,5 +32,8 @@ export default new Vuex.Store({
   state: rootState,
   modules: {
     DashboardStore,
+    toast: createModule({
+      dismissInterval: 5000,
+    }),
   },
 });

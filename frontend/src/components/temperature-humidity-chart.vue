@@ -16,6 +16,7 @@
   import Chart from 'chart.js';
   import {Component, Vue} from 'vue-property-decorator';
   import {DashboardTypes} from '@/types/dashboard.types';
+  import {EventBus} from '@/event-bus';
 
   const moment = require('moment');
 
@@ -36,6 +37,12 @@
           this.myChart.data.datasets[1].data.push(mutation.payload.humidity);
           this.myChart.update();
         }
+      });
+      EventBus.$on(DashboardTypes.ClearData, () => {
+        for (let i = 0; i < this.myChart.data.datasets.length; i++) {
+          this.myChart.data.datasets[i].data = [];
+        }
+        this.myChart.update();
       });
     }
 
@@ -72,6 +79,15 @@
             display: false,
           },
           maintainAspectRatio: false,
+          tooltips: {
+            callbacks: {
+              label(tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData): string | string[] {
+                const label: string = data.datasets[tooltipItem.datasetIndex].label || '';
+                const units: string = tooltipItem.datasetIndex === 0 ? 'ºC' : '%';
+                return `${label}: ${tooltipItem.yLabel}${units}`;
+              },
+            },
+          },
         },
       });
     }

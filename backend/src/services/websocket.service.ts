@@ -15,8 +15,6 @@ const port = 3001;
 @WebSocketGateway(port)
 export class WebsocketService implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
 
-  private intervalData: number = 1000; // ms
-
   @WebSocketServer() server: Server;
 
   constructor(private indoorService: IndoorService) {
@@ -24,7 +22,7 @@ export class WebsocketService implements OnGatewayConnection, OnGatewayDisconnec
 
   afterInit(server: Server): void {
     Logger.log(`Websocket listening on port ${port}`, WebsocketService.name);
-    this.setTimers();
+    this.subscribeAllData();
   }
 
   handleConnection(socket: Socket): void {
@@ -37,14 +35,13 @@ export class WebsocketService implements OnGatewayConnection, OnGatewayDisconnec
     Logger.log(`${Object.keys(this.server.sockets.connected).length} users connected`, WebsocketService.name);
   }
 
-  private setTimers(): void {
-    setInterval(async () => {
-      await this.sendIndoorData();
-    }, this.intervalData);
+  private subscribeAllData(): void {
+    this.indoorService.indoorDataObservable.subscribe((indoorData: IndoorData) => {
+      this.sendIndoorData(indoorData);
+    });
   }
 
-  private async sendIndoorData() {
-    const indoorData: IndoorData = this.indoorService.getIndoorData();
+  private sendIndoorData(indoorData: IndoorData) {
     this.server.emit(Event.INDOOR_DATA, indoorData);
   }
 

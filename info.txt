@@ -1,0 +1,102 @@
+Crear component Vue:
+
+Dirigirse a la ruta del proyecto frontend/src/components:
+
+Crear nuevo Vue Component.
+
+Librerías de Vue que facilitan el desarrollo en typescript:
+
+https://github.com/vuejs/vue-class-component
+https://github.com/kaorun343/vue-property-decorator
+
+Editar el fichero .vue que hemos creado en el proyecto.
+
+Copiar en la parte de "script" la funcionalidad básica de un componente Vue para typescript.
+
+<script lang="ts">
+  import {Vue, Component} from 'vue-property-decorator';
+
+  @Component({
+    name: 'your-component-name',
+  })
+  export default class YourComponent extends Vue {
+  }
+</script>
+
+Abrir la url:
+https://demos.creative-tim.com/bs3/paper-dashboard/dashboard.html
+
+Inspeccionar el elemento que deseemos integrar en nuestra aplicación.
+Copiar código html:
+
+<div class="card">
+        <div class="content">
+            <div class="row">
+                <div class="col-xs-5">
+                    <div class="icon-big icon-danger text-center">
+                        <i class="ti-pulse"></i>
+                    </div>
+                </div>
+                <div class="col-xs-7">
+                    <div class="numbers">
+                        <p>Errors</p>
+                        23
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <hr>
+                <div class="stats">
+                    <i class="ti-timer"></i> In the last hour
+                </div>
+            </div>
+    </div>
+</div>
+
+y pegarlo dentro del apartado <template> de nuestro nuevo componente Vue.
+
+Añadir el componente en nuestra vista (frontend/src/views/app-dashboard.vue).
+
+Copiar el nombre que le hemos asignado al nuevo componente en la parte de la vista donde queramos visualizarlo.
+
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-3 col-sm-6">
+        <ground-state></ground-state>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <light-state></light-state>
+      </div>
+      <!-- Location -->
+      <div class="col-lg-3 col-sm-6">
+        <water-level></water-level>
+      </div>
+      <!-- End location -->
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <temperature-humidity-chart></temperature-humidity-chart>
+      </div>
+    </div>
+  </div>
+</template>
+
+Añadir a nuestra vista en el apartado 'components' nuestro nuevo componente:
+
+  @Component({
+    name: 'app-dashboard',
+    components: {
+      // Aquí
+      WaterLevel,
+      // End aquí
+      GroundState,
+      LightState,
+      TemperatureHumidityChart,
+    },
+  })
+  export default class AppDashboard extends Vue {
+
+  }
+
+  Modificar componente a nuestro gusto

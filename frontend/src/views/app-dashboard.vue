@@ -5,6 +5,9 @@
         <ground-state></ground-state>
       </div>
       <div class="col-lg-3 col-sm-6">
+        <water-level></water-level>
+      </div>
+      <div class="col-lg-3 col-sm-6">
         <light-state></light-state>
       </div>
     </div>
@@ -18,9 +21,10 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator';
-  import TemperatureHumidityChart from '@/components/temperature-humidity-chart.vue';
   import GroundState from '@/components/ground-state.vue';
   import LightState from '@/components/light-state.vue';
+  import TemperatureHumidityChart from '@/components/temperature-humidity-chart.vue';
+  import WaterLevel from '@/components/water-level.vue';
 
   @Component({
     name: 'app-dashboard',
@@ -28,6 +32,7 @@
       GroundState,
       LightState,
       TemperatureHumidityChart,
+      WaterLevel,
     },
   })
   export default class AppDashboard extends Vue {

@@ -1,7 +1,8 @@
+import {ArduinoSerialData} from '../interfaces/arduino-serial-data';
 import {IndoorData} from '../classes/indoor-data';
 import {Injectable, Logger} from '@nestjs/common';
+import {Observable} from 'rxjs';
 import * as SerialPort from 'serialport';
-import {ArduinoSerialData} from '../interfaces/arduino-serial-data';
 
 const Readline = require('@serialport/parser-readline');
 
@@ -9,46 +10,46 @@ const Readline = require('@serialport/parser-readline');
 export class IndoorService {
 
   readonly baudRate: number = 115200;
+  public indoorDataObservable: Observable<IndoorData>;
   readonly path: string = '/dev/ttyACM0';
-  private indoorData: IndoorData;
   private serialPort: SerialPort;
 
   constructor() {
-    this.indoorData = new IndoorData();
+    this.connectToSerialPort();
+  }
+
+  private connectToSerialPort(): void {
     this.serialPort = new SerialPort(this.path, {
       baudRate: this.baudRate,
     }, (err: any) => {
       if (err) {
         Logger.log(`An error occurred opening '${this.path}' using baudrate ${this.baudRate}`, IndoorService.name);
         Logger.log(err, IndoorService.name);
-        return;
       } else {
         Logger.log(`Serial port '${this.path}' opened using baudrate ${this.baudRate}`, IndoorService.name);
       }
     });
     const parser = this.serialPort.pipe(new Readline({delimiter: '\r\n'}));
-    parser.on('data', (data: string) => {
-      const serialData: ArduinoSerialData = this.isJsonString(data);
-      if (serialData != null) {
-        if (!serialData.error) {
-          this.indoorData.humidity = serialData.data.humidity;
-          this.indoorData.temperature = serialData.data.temperature;
-          this.indoorData.light = serialData.data.light;
-          this.indoorData.higrometer = serialData.data.higrometer;
-          Logger.log(this.indoorData, IndoorService.name);
-        } else {
-          this.indoorData.humidity = -1;
-          this.indoorData.temperature = -1;
-          this.indoorData.light = false;
-          this.indoorData.higrometer = -1;
-          Logger.log(serialData.message, IndoorService.name);
+    this.indoorDataObservable = new Observable((observer) => {
+      parser.on('data', (data: string) => {
+        const serialData: ArduinoSerialData = this.isJsonString(data);
+        if (serialData != null) {
+          if (!serialData.error) {
+            const indoorData = new IndoorData();
+            indoorData.humidity = serialData.data.humidity;
+            indoorData.temperature = serialData.data.temperature;
+            indoorData.light = serialData.data.light;
+            indoorData.higrometer = serialData.data.higrometer;
+            indoorData.waterLevel = serialData.data.waterLevel;
+            Logger.log(indoorData, IndoorService.name);
+            observer.next(indoorData);
+          } else {
+            Logger.log(serialData.message, IndoorService.name);
+            observer.next(null);
+          }
         }
-      }
+      });
     });
-  }
-
-  public getIndoorData(): IndoorData {
-    return this.indoorData;
   }
 
   public toggleLight(): void {
