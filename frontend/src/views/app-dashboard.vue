@@ -8,7 +8,7 @@
         <water-level></water-level>
       </div>
       <div class="col-lg-3 col-sm-6">
-        <light-state></light-state>
+        <!-- TODO: instanciar el nuevo componente -->
       </div>
     </div>
     <div class="row">
@@ -22,17 +22,17 @@
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator';
   import GroundState from '@/components/ground-state.vue';
-  import LightState from '@/components/light-state.vue';
   import TemperatureHumidityChart from '@/components/temperature-humidity-chart.vue';
   import WaterLevel from '@/components/water-level.vue';
+  // TODO: Importar el nuevo componente
 
   @Component({
     name: 'app-dashboard',
     components: {
       GroundState,
-      LightState,
       TemperatureHumidityChart,
       WaterLevel,
+      // TODO: Añadir el nuevo componente
     },
   })
   export default class AppDashboard extends Vue {

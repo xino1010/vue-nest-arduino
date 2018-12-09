@@ -13,9 +13,6 @@ const dashboardGetters: GetterTree<DashboardState, RootState> = {
   [DashboardTypes.Humidity](state: DashboardState): number {
     return state.indoorData.humidity;
   },
-  [DashboardTypes.Light](state: DashboardState): boolean {
-    return state.indoorData.light;
-  },
   [DashboardTypes.Temperature](state: DashboardState): number {
     return state.indoorData.temperature;
   },
@@ -25,6 +22,7 @@ const dashboardGetters: GetterTree<DashboardState, RootState> = {
   [DashboardTypes.WaterLevel](state: DashboardState): number {
     return state.indoorData.waterLevel;
   },
+  // TODO: Añadir el getter para el atributo "light"
 };
 
 const dashboardMutations: MutationTree<DashboardState> = {
@@ -37,12 +35,11 @@ const dashboardMutations: MutationTree<DashboardState> = {
 };
 
 const dashboardActions: ActionTree<DashboardState, RootState> = {
-  [DashboardTypes.Light]: () => {
-    $socket.emit(DashboardTypes.SOCKET_INDOOR_TOGGLE_LIGHT);
-  },
   [DashboardTypes.ClearData]: ({commit}) => {
     commit(DashboardTypes.ClearData);
   },
+  // TODO: Añadir la acción para cambiar el estado de la "light"
+  // TODO: Emitir el evento "DashboardTypes.SOCKET_INDOOR_TOGGLE_LIGHT" mediante $socket
 };
 
 export const DashboardStore: Module<DashboardState, RootState> = {
