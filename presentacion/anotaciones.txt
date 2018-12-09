@@ -1,0 +1,41 @@
+Página 1
+
+- Estado: Fuente de verdad que guía nuestra aplicación.
+- Vista: mapa declarativo del estado.
+- Acciones: posibles formas de poder cambiar el estado a partir de las interacciones del usuario.
+
+Página 2
+
+· Punto 1:
+  - El paso de variables entre componentes puede ser tedioso cuando crece.
+  - El código estaría repleto de eventos entre padres e hijos.
+  - Más temprano que tarde, el código se vuelve inmantenible.
+
+· Punto 1:
+  - Vuex está destinado para aplicaciones cuyo tamaño sea medio o grande.
+
+Página 3
+
+· Punto 3:
+  - Cuando los componente recuperar el estado de la store, se actualizarán de manera reactiva y eficiente si éste cambia.
+
+· Punto 5:
+  - Esto garaniza que cada cambio de estado deje un registro rastreable y podamos depurar correctamente nuestra app.
+
+Página 5
+
+· Punto 1:
+  - Paginar, filtrar resultados.
+  - Perfectamente podría estar dentro de un componente, pero si queremos reutilizar la lógica.
+
+Página 6
+
+· Punto 5:
+  - Las mutaciones siguen las reglas de reactividad de Vue.
+    Esto es muy importante, por que cuando el valor del estado sea alterado mediante mutaciones,
+    cualquier componente que esté observando el estado, recibirá el nuevo valor.
+
+ · Punto 6:
+  - Supongamos que tenemos una mutación que al ser lanzado hace una llamada asíncrona para actualizar los todos,
+    otro que simplemente elimina uno de la lista.
+    Al ser el primero asíncrono no podemos garantizar el orden real en el que se alterará el estado.

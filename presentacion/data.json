@@ -1,0 +1,14 @@
+
+{
+  "humidity": 50,
+  "temperature": 19.5,
+  "light": false,
+  "higrometer": 0,
+  "waterLevel": 3.6,
+}
+
+
+
+{
+  "action": "light",
+}

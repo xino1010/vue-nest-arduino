@@ -39,8 +39,8 @@
         }
       });
       EventBus.$on(DashboardTypes.ClearData, () => {
-        for (let i = 0; i < this.myChart.data.datasets.length; i++) {
-          this.myChart.data.datasets[i].data = [];
+        for (const dataset of this.myChart.data.datasets) {
+          dataset.data = [];
         }
         this.myChart.update();
       });

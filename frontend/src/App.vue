@@ -13,16 +13,16 @@
 </template>
 
 <script lang="ts">
+  import {Action} from 'vuex-class';
   import {ADD_TOAST_MESSAGE} from 'vuex-toast';
   import AppSidebar from '@/components/app-sidebar.vue';
   import AppHeader from '@/components/app-header.vue';
   import AppFooter from '@/components/app-footer.vue';
   import {Component, Vue} from 'vue-property-decorator';
+  import {DashboardTypes} from '@/types/dashboard.types';
   import {EventBus} from '@/event-bus';
   import {ToastData} from '@/types/toast-data';
   import {ToastType} from '@/enums/toast-type';
-  import {DashboardTypes} from '@/types/dashboard.types';
-  import {Action} from 'vuex-class';
 
   const vuexToast = require('vuex-toast');
 
@@ -37,7 +37,7 @@
   })
   export default class App extends Vue {
 
-    @Action(DashboardTypes.ClearData, {namespace: DashboardTypes.Store}) clearDashboardData: () => void;
+    @Action(DashboardTypes.ClearData, {namespace: DashboardTypes.Store}) private clearDashboardData!: () => void;
 
     public mounted() {
       this.$options['sockets'].connect = () => {
