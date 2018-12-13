@@ -12,6 +12,7 @@
 #define MAX_VALUE_WATER_LEVEL 625
 #define INTERVAL_HIGROMETER 1000
 #define MAX_VALUE_HIGROMETER 1023
+#define INTERVAL_SEND_DATA 2000
 
 bool light = false;
 DHT dht(DHTPIN, DHTTYPE);
@@ -22,6 +23,7 @@ float higrometer = 0;
 unsigned long lastDhtRead;
 unsigned long lastWaterLevelRead;
 unsigned long lastHigrometerRead;
+unsigned long lastDataSent;
 
 void setup() {
   Serial.begin(BAUDRATE);
@@ -34,12 +36,10 @@ void setup() {
   lastDhtRead = millis();
   lastWaterLevelRead = millis();
   lastHigrometerRead = millis();
+  lastDataSent = millis();
 }
 
 void loop() {
-  // Wait a few seconds between measurements.
-  delay(500);
-
   if (Serial.available() > 0) {
     DynamicJsonBuffer dynamicJsonBuffer(200);
     String userEntry = Serial.readString();
@@ -62,27 +62,31 @@ void loop() {
   readDht();
   readWaterLevel();
   readHigrometer();
-  float higrometer = 0;
+  sendData();
+}
 
-  StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& json = jsonBuffer.createObject();
-  // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t)) {
-    json["error"] = true;
-    json["message"] = "Failed to read from DHT sensor!";
-    return;
+void sendData() {
+  if (millis() - lastDataSent >= INTERVAL_SEND_DATA) {
+    StaticJsonBuffer<200> jsonBuffer;
+    JsonObject& json = jsonBuffer.createObject();
+    // Check if any reads failed and exit early (to try again).
+    if (isnan(h) || isnan(t)) {
+      json["error"] = true;
+      json["message"] = "Failed to read from DHT sensor!";
+      return;
+    }
+    json["error"] = false;
+    JsonObject& data = json.createNestedObject("data");
+    data["humidity"] = h;
+    data["temperature"] = t;
+    data["light"] = light;
+    data["higrometer"] = higrometer;
+    data["waterLevel"] = waterLevel;
+    
+    imprimeJson(json);
+    jsonBuffer.clear();
+    lastDataSent = millis();
   }
-
-  json["error"] = false;
-  JsonObject& data = json.createNestedObject("data");
-  data["humidity"] = h;
-  data["temperature"] = t;
-  data["light"] = light;
-  data["higrometer"] = higrometer;
-  data["waterLevel"] = waterLevel;
-  
-  imprimeJson(json);
-  jsonBuffer.clear();
 }
 
 void imprimeJson(JsonObject& root) {
@@ -114,7 +118,11 @@ void readWaterLevel() {
 void readHigrometer() {
   if (millis() - lastHigrometerRead >= INTERVAL_HIGROMETER) {
     float value = analogRead(HIGROMETER_SENSOR);
-    higrometer = (value * 100) / (float) MAX_VALUE_HIGROMETER;
+    higrometer = mapRange(value, MAX_VALUE_HIGROMETER, 0, 0, 100);
     lastHigrometerRead = millis();
   }
+}
+
+float mapRange(float value, float low1, float high1, float low2, float high2) {
+    return low2 + ((high2 - low2) * (value - low1)) / (high1 - low1);
 }
