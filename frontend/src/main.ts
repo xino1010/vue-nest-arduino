@@ -14,6 +14,9 @@ import './assets/css/themify-icons.css';
 import '../node_modules/weather-icons/css/weather-icons.min.css';
 import '../node_modules/vuex-toast/dist/vuex-toast.css';
 
+// https://demos.creative-tim.com/bs3/paper-dashboard/dashboard.html
+
+
 Vue.config.productionTip = false;
 Vue.use(VueSocketio, $socket, {store});
 Vue.use(require('vue-moment'));
