@@ -39,8 +39,8 @@ export class IndoorService {
             indoorData.humidity = serialData.data.humidity;
             indoorData.temperature = serialData.data.temperature;
             indoorData.light = serialData.data.light;
-            indoorData.higrometer = serialData.data.higrometer;
-            indoorData.waterLevel = serialData.data.waterLevel;
+            indoorData.higrometer = this.roundTwoDecimals(serialData.data.higrometer);
+            indoorData.waterLevel = this.roundTwoDecimals(serialData.data.waterLevel);
             Logger.log(indoorData, IndoorService.name);
             observer.next(indoorData);
           } else {
@@ -74,5 +74,8 @@ export class IndoorService {
     return null;
   }
 
+  private roundTwoDecimals(value: number): number {
+    return Math.round(value * 100) / 100;
+  }
 
 }

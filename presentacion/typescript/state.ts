@@ -1,4 +1,9 @@
 // En store
+export class TodoStoreTypes {
+  public static Store: string = 'TodoStore';
+  public static Todos: string = 'todos';
+}
+
 export class Todo {
   id: number;
   text: string;
@@ -30,6 +35,9 @@ const todosState: TodosState = {
     name: 'my-comp',
   })
   export const MyComp extends Vue {
-    @State('todos') todos: Todo[];
+    @State(
+      TodoStoreTypes.Todos,
+      {namespaced: TodoStoreTypes.Store}
+    ) todos: Todo[];
   }
 </script>

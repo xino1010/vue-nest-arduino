@@ -1,12 +1,14 @@
 // En store
 import {GetterTree} from 'vuex';
 
-export class StoreTypes {
+export class TodoStoreTypes {
+  public static Store: string = 'TodoStore';
+  public static Todos: string = 'todos';
   public static FinishedTodos: string = 'finishedTodos';
 }
 
 const todosGetters: GetterTree<TodosState, any> = {
-  [StoreTypes.FinishedTodos](state: TodosState): Todo[] {
+  [TodoStoreTypes.FinishedTodos](state: TodosState): Todo[] {
     return state.todos.filter(f => f.done);
   },
 };
@@ -29,6 +31,9 @@ const todosGetters: GetterTree<TodosState, any> = {
     name: 'my-comp',
   })
   export const MyComp extends Vue {
-    @Getter(StoreTypes.FinishedTodos) finishedTodos: Todo[];
+    @Getter(
+      StoreTypes.FinishedTodos,
+      {namespace: TodoStoreTypes.Store}
+    ) finishedTodos: Todo[];
   }
 </script>

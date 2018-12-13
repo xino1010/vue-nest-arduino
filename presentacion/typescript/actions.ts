@@ -2,23 +2,25 @@
 import {ActionTree} from 'vuex';
 import Api from '../services/api';
 
-export class StoreTypes {
+export class TodoStoreTypes {
+  public static Store: string = 'TodoStore';
+  ...
   public static GetTodos: string = 'getTodos';
   public static RemoveTodo: string = 'removeTodo';
   public static UpdateTodos: string = 'updateTodos';
 }
 
 const todosActions: ActionTree<TodoState, any> = {
-  [StoreTypes.GetTodos]: (context) => {
+  [TodoStoreTypes.GetTodos]: (context) => {
     Api.getAllTodos().then(response => {
       const todos: Todo[] = response.data;
-      context.commit(StoreTypes.UpdateTodos, todos);
+      context.commit(TodoStoreTypes.UpdateTodos, todos);
     });
   },
-  [StoreTypes.RemoveTodo]: (context, todo: Todo) => {
+  [TodoStoreTypes.RemoveTodo]: (context, todo: Todo) => {
     Api.removeTodo(todo).then(response => {
       const todo: Todo = response.data;
-      context.commit(StoreTypes.RemoveTodo, todo);
+      context.commit(TodoStoreTypes.RemoveTodo, todo);
     });
   },
 };
@@ -44,9 +46,12 @@ const todosActions: ActionTree<TodoState, any> = {
     name: 'my-comp',
   })
   export const MyComp extends Vue {
-    @State('todos') todos: Todo[];
-    @Action(StoreTypes.GetTodos) public getTodos!: () => void;
-    @Action(StoreTypes.RemoveTodo) public removeTodo!: (todo: Todo) => void;
+    @State(TodoStoreTypes.Todos,{namespace: TodoStoreTypes.Store})
+      public todos: Todo[];
+    @Action(TodoStoreTypes.GetTodos, {namespace: TodoStoreTypes.Store})
+      public getTodos!: () => void;
+    @Action(TodoStoreTypes.RemoveTodo, {namespace: TodoStoreTypes.Store})
+      public removeTodo!: (todo: Todo) => void;
 
     mounted() {
       this.getTodos();
